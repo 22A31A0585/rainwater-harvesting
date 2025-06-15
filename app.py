@@ -3,37 +3,99 @@ import streamlit as st
 
 
 # Set page background color to light green
-page_bg = """
+# ✅ Full Dark Mode Styling
+light_mode_css = """
 <style>
-body {
-    background-color: #e6f9e6;
+html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Headings and general text */
+h1, h2, h3, h4, h5, h6,
+p, div, span, label, strong {
+    color: #000000 !important;
+}
+
+/* Input fields */
+input, textarea, select {
+    background-color: #f0f0f0 !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+}
+
+/* Tables */
+thead, tbody, tr, th, td {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #dddddd !important;
+}
+
+/* Buttons */
+button, .stButton > button {
+    background-color: #e0e0e0 !important;
+    color: #000000 !important;
+    border: 1px solid #cccccc !important;
+}
+
+/* Charts & tables container */
+.stPlotlyChart, .stTable {
+    background-color: #ffffff !important;
+}
+
+/* Sidebar & labels fix */
+.css-1cpxqw2, .css-81oif8 {
+    color: #000000 !important;
 }
 </style>
 """
-st.markdown(page_bg, unsafe_allow_html=True)
+st.markdown(light_mode_css, unsafe_allow_html=True)
+
+
 
 # Title
-st.markdown("<h1 style='text-align: center; color: #1f77b4;'> Smart Rainwater Harvesting System 🌱</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #58a6ff;'>Smart Rainwater Harvesting System</h1>", unsafe_allow_html=True)
+
 
 # Team Info with moderate spacing
+# Team Info — beginner friendly
 st.markdown("""
-<div style='text-align: center; font-size:18px; line-height:1.5;'>
+<div style='
+    background-color: #f5f7fa;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    font-family: "Segoe UI", sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+'>
 
-<strong>Developed by:</strong> HydroVanta 💧<br><br>
-<strong>Team Members:</strong><br>
-Md. Anjum Sharifa<br>
-M. Lokesh<br><br>
-<strong>College:</strong><br>
-Pragati Engineering College<br><br>
-<strong>Branch & Year:</strong><br>
-CSE, 4th Year
+<h2 style='color: #2c3e50;'>👨‍💻 Team Information</h2>
+
+<p style='font-size:18px; margin-top: 20px;'>
+    <strong>Project Name:</strong><br>🌧️ Smart Rainwater Harvesting System
+</p>
+
+<p style='font-size:18px; margin-top: 15px;'>
+    <strong>Team Name:</strong><br>💧 HydroVanta
+</p>
+
+<p style='font-size:18px; margin-top: 15px;'>
+    <strong>Team Members:</strong><br>
+    Md. Anjum Sharifa<br>
+    M. Lokesh
+</p>
+
+<p style='font-size:18px; margin-top: 15px;'>
+    <strong>Institution:</strong><br>🏫 Pragati Engineering College
+</p>
+
+<p style='font-size:18px; margin-top: 15px;'>
+    <strong>Branch & Year:</strong><br>💻 CSE, Final Year (4th Year)
+</p>
 
 </div>
 """, unsafe_allow_html=True)
 
-# Divider and intro text
-st.markdown("---")
-st.write("Welcome! This application helps monitor and forecast water storage using rainfall prediction and real-time analytics. Designed to support sustainable water management practices. 💧📊")
 
 import pandas as pd
 import numpy as np
@@ -80,6 +142,22 @@ final_tank_level = max(0, min(final_tank_level, tank_capacity))
 st.write(f"Expected Rainfall: **{rainfall_sum:.1f} mm**")
 st.write(f"Water that can be collected: **{collected_water:.0f} liters**")
 st.write(f"Estimated tank level after 7 days: **{final_tank_level:.0f} / {tank_capacity} liters**")
+import plotly.express as px
+
+labels = ['Collected Water', 'Future Usage', 'Remaining Capacity']
+values = [collected_water, future_usage, max(0, tank_capacity - final_tank_level)]
+
+fig_pie = px.pie(
+    names=labels,
+    values=values,
+    title="💧 Water Distribution Over Next 7 Days",
+    color_discrete_sequence=px.colors.sequential.Blues
+)
+fig_pie.update_layout(height=300, width=500)
+st.plotly_chart(fig_pie)
+
+
+
 
 # 📌 Suggestions
 if final_tank_level > tank_capacity:
@@ -95,28 +173,29 @@ else:
 fig = go.Figure(data=[
     go.Bar(x=forecast_df["Date"], y=forecast_df["Predicted Rainfall (mm)"], marker_color='skyblue')
 ])
-
 fig.update_layout(
     title="📅 Predicted Rainfall Over Next 7 Days",
     xaxis_title="Day",
     yaxis_title="Rainfall (mm)",
-    template="plotly_white"
+    template="plotly_dark",  # Dark mode
+    height=300,  # Smaller height
+    width=600    # Smaller width
 )
-
 st.plotly_chart(fig)
+
 
 fig_gauge = go.Figure(go.Indicator(
     mode = "gauge+number",
     value = final_tank_level,
     domain = {'x': [0, 1], 'y': [0, 1]},
-    title = {'text': "🔄 Tank Level (liters)", 'font': {'size': 20}},
+    title = {'text': "🔄 Tank Level (liters)", 'font': {'size': 18}},
     gauge = {
         'axis': {'range': [0, tank_capacity]},
         'bar': {'color': "#1f77b4"},
         'steps': [
-            {'range': [0, 300], 'color': "lightcoral"},
-            {'range': [300, 700], 'color': "khaki"},
-            {'range': [700, 1000], 'color': "lightgreen"}
+            {'range': [0, 300], 'color': "darkred"},
+            {'range': [300, 700], 'color': "goldenrod"},
+            {'range': [700, 1000], 'color': "green"}
         ],
         'threshold': {
             'line': {'color': "red", 'width': 4},
@@ -125,7 +204,7 @@ fig_gauge = go.Figure(go.Indicator(
         }
     }
 ))
-
+fig_gauge.update_layout(height=300, width=600)
 st.plotly_chart(fig_gauge)
 
 from streamlit_chat import message
@@ -136,44 +215,37 @@ st.markdown("## 🤖 Ask a Question")
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
-# Input box for user
-user_input = st.text_input("💬 Ask me anything about water storage or rainfall:", key="input", help="Try: How is rainwater collected?")
+# Clear Chat button
+if st.button("🔄 Clear Chat"):
+    st.session_state['messages'] = []
 
+# Input
+user_input = st.text_input("💬 Ask me anything about water storage or rainfall:", key="input")
 
 if user_input:
-    # Predefined detailed responses
-    if "rain" in user_input.lower():
-        answer = """🌧️ Rainfall Forecast Info:
-We use predicted data for the next 7 days to estimate how much rain will fall. This helps in understanding how much water your rooftop can collect, which supports sustainable planning."""
-    elif "tank" in user_input.lower():
-        answer = """🚰 Tank Level Explanation:
-Your water tank level is calculated using:
-- Current tank level
-- Total rainwater collected from your rooftop
-- Daily household usage over 7 days
-This helps you know if there’s enough water or a shortage risk."""
-    elif "overflow" in user_input.lower():
-        answer = """⚠️ Overflow Warning:
-If the collected rainwater + current level > tank capacity, the app shows a warning.
-Tip: You can divert the excess water to a storage sump or reuse it for gardening."""
-    elif "efficiency" in user_input.lower():
-        answer = """✅ Harvesting Efficiency:
-We assume 90% efficiency. This means 10% of rainwater is lost due to leakage or poor collection.
-You can improve efficiency by cleaning rooftops, checking pipes, and installing filters."""
-    else:
-        answer = """🤖 I didn’t get that. Try asking me about:
-- Rain prediction
-- Tank usage
-- Overflow risks
-- Efficiency tips"""
+    lower_input = user_input.lower()
 
-    # Save conversation
+    if lower_input in ["hi", "hello", "hey"]:
+        answer = "👋 Hello! I’m your water assistant. Ask me anything about rainfall, tank usage, or overflow."
+    elif "rain" in lower_input:
+        answer = "🌧️ Rainfall is predicted using weather data for 7 days. It helps calculate water you can collect from your rooftop."
+    elif "tank" in lower_input:
+        answer = "🚰 Tank level is based on current level, rainfall collection, and usage. This helps predict shortage or overflow."
+    elif "overflow" in lower_input:
+        answer = "⚠️ Overflow means your tank might exceed capacity. You can drain it or redirect it to garden/well."
+    elif "efficiency" in lower_input:
+        answer = "✅ 90% efficiency is assumed due to small losses in pipes or filters. You can increase it by cleaning and maintaining your system."
+    elif "harvesting" in lower_input:
+        answer = "🌿 Rainwater harvesting is collecting and storing rainwater for reuse. It reduces dependency on groundwater."
+    elif "improve" in lower_input or "better" in lower_input:
+        answer = "🛠️ Improve by: cleaning rooftop, using mesh filters, and connecting overflow to a backup tank."
+    else:
+        answer = "🤖 I didn’t get that. Try asking about: rain prediction, tank usage, overflow risks, or tips."
+
+    # Save to chat history
     st.session_state.messages.append(("user", user_input))
     st.session_state.messages.append(("bot", answer))
 
 # Display chat history
 for sender, msg in st.session_state.messages:
-    if sender == "user":
-        message(msg, is_user=True)
-    else:
-        message(msg)
+    message(msg, is_user=(sender == "user"))
