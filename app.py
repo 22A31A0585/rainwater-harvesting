@@ -340,8 +340,8 @@ with st.form("feedback_form"):
                 "email": fb_email,
                 "feedback": fb_feedback
             }
+            firebase_url = "https://rainwaterharvesting-af34a-default-rtdb.firebaseio.com/feedbacks.json"
 
-            firebase_url = "https://smartrainwaterfeedback-default-rtdb.firebaseio.com/feedbacks.json"
             response = requests.post(firebase_url, json=fb_data)
 
             if response.status_code == 200:
