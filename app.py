@@ -19,6 +19,20 @@ forecast_df = pd.DataFrame({
 # ✅ Full Dark Mode Styling
 light_mode_css = """
 <style>
+/* Force light mode even when user has dark theme */
+@media (prefers-color-scheme: dark) {
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+@media (prefers-color-scheme: light) {
+  html, body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
 html, body {
     background-color: #ffffff !important;
     color: #000000 !important;
@@ -62,6 +76,7 @@ button, .stButton > button {
 }
 </style>
 """
+
 st.markdown(light_mode_css, unsafe_allow_html=True)
 
 
